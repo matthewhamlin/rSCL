@@ -1,10 +1,10 @@
-library(tidyverse)
-library(data.table)
-library(lubridate)
-library(dplyr)
-library(timeDate)
-library(RCurl)
-library(zoo)
+# library(tidyverse)
+# library(data.table)
+# library(lubridate)
+# library(dplyr)
+# library(timeDate)
+# library(RCurl)
+# library(zoo)
 
 #' @export
 getWeatherData <- function(date1,date2, station_id = "727930-24233",Interp = FALSE){
@@ -32,7 +32,7 @@ getWeatherData <- function(date1,date2, station_id = "727930-24233",Interp = FAL
                                       month = tempTable$Month,
                                       day = tempTable$Day,
                                       hour = tempTable$Hour))
-    setDT(tempTable)
+    tempTable<-setDT(tempTable)
     tempTable[,c(5:12):=lapply(.SD,function(x){ifelse(x==-9999,NA,x)}), .SDcols=5:12]
     tempTable[,c(5:12):=lapply(.SD,function(x){x/10}), .SDcols=5:12]
     tempTable[,c(5:6):=lapply(.SD,function(x){x*(9/5)+32}), .SDcols=5:6]
