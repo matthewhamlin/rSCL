@@ -52,4 +52,4 @@ getWeatherData <- function(date1,date2, station_id = "727930-24233",Interp = FAL
   weatherData$datetime <- lubridate::with_tz(weatherData$datetime, tz="US/Pacific")
   return(weatherData)
 }
-getWeatherData('2020-01-01','2020-01-02')
+#getWeatherData('2020-01-01','2020-01-02')
