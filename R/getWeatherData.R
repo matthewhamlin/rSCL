@@ -1,13 +1,8 @@
 
 #' @export
 getWeatherData <- function(date1,date2, station_id = "727930-24233",Interp = FALSE){
-  library(tidyverse)
-  library(data.table)
-  library(lubridate)
-  library(dplyr)
-  library(timeDate)
-  library(RCurl)
-  library(zoo)
+  `%>%` <- magrittr::`%>%`
+  `:=` <- data.table::`:=`
 
   years <- seq(lubridate::year(as.Date(date1)),lubridate::year(as.Date(date2)))
   dFile <- "Weather.gz"
@@ -28,10 +23,10 @@ getWeatherData <- function(date1,date2, station_id = "727930-24233",Interp = FAL
                                                'Precipitation_Depth_1Hr','Precipitation_Depth_6Hr'))
 
     tempTable <- tempTable %>%
-      dplyr::mutate(datetime = make_datetime(year = tempTable$Year,
-                                      month = tempTable$Month,
-                                      day = tempTable$Day,
-                                      hour = tempTable$Hour))
+      dplyr::mutate(datetime = lubridate::make_datetime(year = tempTable$Year,
+                                                        month = tempTable$Month,
+                                                        day = tempTable$Day,
+                                                        hour = tempTable$Hour))
     tempTable <- data.table::setDT(tempTable)
     tempTable[,c(5:12):=lapply(.SD,function(x){ifelse(x==-9999,NA,x)}), .SDcols=5:12]
     tempTable[,c(5:12):=lapply(.SD,function(x){x/10}), .SDcols=5:12]
