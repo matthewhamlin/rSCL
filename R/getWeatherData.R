@@ -9,7 +9,7 @@
 #' @export
 getWeatherData <- function(date1,date2, station_id = "727930-24233",Interp = FALSE){
 
-  years <- seq(year(as.Date(date1)),year(as.Date(date2)))
+  years <- seq(lubridate::year(as.Date(date1)),lubridate::year(as.Date(date2)))
   dFile <- "Weather.gz"
   weatherData <- data.frame()
 
@@ -28,11 +28,11 @@ getWeatherData <- function(date1,date2, station_id = "727930-24233",Interp = FAL
                                                'Precipitation_Depth_1Hr','Precipitation_Depth_6Hr'))
 
     tempTable <- tempTable %>%
-      mutate(datetime = make_datetime(year = tempTable$Year,
+      dplyr::mutate(datetime = make_datetime(year = tempTable$Year,
                                       month = tempTable$Month,
                                       day = tempTable$Day,
                                       hour = tempTable$Hour))
-    tempTable<-setDT(tempTable)
+    tempTable <- data.table::setDT(tempTable)
     tempTable[,c(5:12):=lapply(.SD,function(x){ifelse(x==-9999,NA,x)}), .SDcols=5:12]
     tempTable[,c(5:12):=lapply(.SD,function(x){x/10}), .SDcols=5:12]
     tempTable[,c(5:6):=lapply(.SD,function(x){x*(9/5)+32}), .SDcols=5:6]
@@ -40,16 +40,16 @@ getWeatherData <- function(date1,date2, station_id = "727930-24233",Interp = FAL
     weatherData <- rbind(weatherData,tempTable)
   }
   weatherData <- weatherData %>%
-    filter(datetime >= as.Date(date1) & datetime < (as.Date(date2)+1))
+    dplyr::filter(datetime >= as.Date(date1) & datetime < (as.Date(date2)+1))
 
   if(Interp){
     cols<-c('Temperature','Dew_Point_Temperature','Sea_Level_Pressure','Wind_Speed')
     for(col in cols){
-      weatherData[col] <-na.approx(weatherData[col])
+      weatherData[col] <-zoo::na.approx(weatherData[col])
     }
   }
 
-  weatherData$datetime <- with_tz(weatherData$datetime, tz="US/Pacific")
+  weatherData$datetime <- lubridate::with_tz(weatherData$datetime, tz="US/Pacific")
   return(weatherData)
 }
-
+getWeatherData('2020-01-01','2020-01-02')
