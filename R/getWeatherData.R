@@ -1,13 +1,13 @@
-# library(tidyverse)
-# library(data.table)
-# library(lubridate)
-# library(dplyr)
-# library(timeDate)
-# library(RCurl)
-# library(zoo)
 
 #' @export
 getWeatherData <- function(date1,date2, station_id = "727930-24233",Interp = FALSE){
+  library(tidyverse)
+  library(data.table)
+  library(lubridate)
+  library(dplyr)
+  library(timeDate)
+  library(RCurl)
+  library(zoo)
 
   years <- seq(lubridate::year(as.Date(date1)),lubridate::year(as.Date(date2)))
   dFile <- "Weather.gz"
